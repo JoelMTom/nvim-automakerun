@@ -1,7 +1,7 @@
 local M ={}
 
-M.setup = function (a, opts)
-  print(vim.inspect(a), vim.inspect(opts))
+M.setup = function (opts)
+  print(vim.inspect(opts))
 end
 
 
