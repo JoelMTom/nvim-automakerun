@@ -13,20 +13,23 @@ function float_window.new(filename)
 end
 
 local function get_window_config(title)
-  local height = 20
-  local width = vim.api.nvim_win_get_width
+  local row = 0
+  local col = vim.api.nvim_win_get_height(0)
+  local width = vim.api.nvim_win_get_width(0)
+  local height = vim.fn.floor(35/100 * col)
 
   local config = {
-    realtive = "editor",
+    relative = "win",
     height = height,
     width = width,
-    anchor = "SE",
-    row = 0,
-    col = 0,
+    anchor = "SW",
+    -- row = 5,
+    -- col = 0,
     style = "minimal",
     border = "rounded",
     title = title,
     title_pos = left,
+    bufpos = {col, row}
   }
   return config
 end
@@ -44,11 +47,13 @@ end
 function float_window:close()
   local window = self.window
   local buffer = self.buffer
-  if window ~= nil and vim.api.nvim_win_is_valid(float_window.buffer) then
+  if window ~= nil and vim.api.nvim_win_is_valid(window) then
     vim.api.nvim_win_close(window, true)
   end
   if buffer ~= nil and vim.api.nvim_buf_is_valid(buffer) then
     vim.api.nvim_buf_delete(buffer, { force = true })
+  else
+    return
   end
 end
 

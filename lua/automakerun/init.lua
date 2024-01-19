@@ -6,30 +6,34 @@ Amr.__index = Amr
 
 function Amr.new()
   local self = setmetatable({
+    task_filename = nil,
+    build_filename = nil,
     build_window = nil,
     run_window = nil,
     default_tasks_json = nil,
-    task_filename = nil,
-    build_filename = nil,
   }, Amr)
 
   return self
 end
 
 function Amr:setup(opts)
-  print(vim.inspect(opts))
-  --[[ self.default_json  = opts.default_json or ""
-  self.task_filename = opts.task_filename or "tasks.json"
-  self.build_filename =  opts.build_filename or "build.log"
-  self.build_window = float_window.new(self.build_filename) ]]
+  Amr.default_json  = opts.default_json
+  Amr.task_filename = opts.task_filename
+  Amr.build_filename =  opts.build_filename
+  Amr.build_window = float_window.new(self.build_filename)
+  Amr.run_window = float_window.new("run")
 end
 
 function Amr:open()
-  self.build_window:open()
+  Amr.build_window:open()
 end
 
 function Amr:close()
-  self.build_window:close()
+  Amr.build_window:close()
+end
+
+function Amr:run()
+  Amr.run_window:open()
 end
 
 return Amr.new()

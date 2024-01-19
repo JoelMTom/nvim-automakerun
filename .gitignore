@@ -40,5 +40,7 @@ luac.out
 *.hex
 
 # nvim lsp files
-
 *.json
+
+# others
+*.log
