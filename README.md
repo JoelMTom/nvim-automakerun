@@ -1,2 +1,2 @@
 # nvim-automakerun
-Nvim build and runner
+Nvim autobuild and autorunner

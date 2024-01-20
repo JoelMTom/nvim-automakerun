@@ -1,5 +1,31 @@
--- vim.api.nvim_set_keymap("n", "<leader>ac", ':lua require("automakerun")', opts?)
+vim.keymap.set("n", "<leader>ab", function ()
+  require("automakerun"):build()
+end, {
+  silent = true,
+  noremap = true,
+  desc = "run make command"
+})
 
-vim.api.nvim_set_keymap("n", "<leader>ao", ":lua require('automakerun').open()<CR>", { silent = true, noremap = true, desc = "open test"})
-vim.api.nvim_set_keymap("n", "<leader>ac", ":lua require('automakerun').close()<CR>", { silent = true, noremap = true, desc = "close test"})
-vim.api.nvim_set_keymap("n", "<leader>ar", ":lua require('automakerun').run()<CR>", { silent = true, noremap = true, desc = "close test"})
+vim.keymap.set("n", "<leader>ar", function ()
+  require("automakerun"):run()
+end, {
+  silent = true,
+  noremap = true,
+  desc = "run make command"
+})
+
+vim.keymap.set("n", "<leader>ae", function ()
+  require("automakerun"):exit()
+end, {
+  silent = true,
+  noremap = true,
+  desc = "run make command"
+})
+
+vim.keymap.set("n", "<leader>at", function ()
+  require("automakerun"):toggle()
+end, {
+  silent = true,
+  noremap = true,
+  desc = "toggle build window"
+})
