@@ -3,7 +3,7 @@ vim.keymap.set("n", "<leader>ab", function ()
 end, {
   silent = true,
   noremap = true,
-  desc = "run make command"
+  desc = "Run build command"
 })
 
 vim.keymap.set("n", "<leader>ar", function ()
@@ -11,7 +11,7 @@ vim.keymap.set("n", "<leader>ar", function ()
 end, {
   silent = true,
   noremap = true,
-  desc = "run make command"
+  desc = "Run the project"
 })
 
 vim.keymap.set("n", "<leader>ae", function ()
@@ -19,7 +19,7 @@ vim.keymap.set("n", "<leader>ae", function ()
 end, {
   silent = true,
   noremap = true,
-  desc = "run make command"
+  desc = "Exit the run window"
 })
 
 vim.keymap.set("n", "<leader>at", function ()
@@ -27,5 +27,13 @@ vim.keymap.set("n", "<leader>at", function ()
 end, {
   silent = true,
   noremap = true,
-  desc = "toggle build window"
+  desc = "Toggle build window"
+})
+
+vim.keymap.set("n", "<leader>as", function ()
+  require("automakerun"):config_read()
+end, {
+  silent = true,
+  noremap = true,
+  desc = "Setup config"
 })

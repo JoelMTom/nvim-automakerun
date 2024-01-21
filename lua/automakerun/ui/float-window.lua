@@ -17,7 +17,7 @@ end
 local function get_window_config(title)
   local row = 0
   local col = vim.api.nvim_win_get_height(0)
-  local width = vim.api.nvim_win_get_width(0)
+  local width = vim.api.nvim_list_uis()[1].width
   local height = vim.fn.floor(35/100 * col)
 
   local config = {
@@ -64,6 +64,7 @@ function float_window:toggle()
     self:open()
     local buffer = vim.fn.bufadd(self.filename)
     vim.fn.bufload(buffer)
+    vim.api.nvim_buf_set_lines(self.buffer, 0, -1, true, {})
     local channel = vim.api.nvim_open_term(self.buffer, {})
     local buffer_data = vim.api.nvim_buf_get_lines(buffer, 0, -1, false)
     local data = string.gsub(utils.concate_strings(buffer_data, "\n"), "\r ", "\n\r")
