@@ -1,6 +1,6 @@
 local M = {}
 
-function M.concate_strings(strings, delim)
+function M.concateStrings(strings, delim)
   local res = ""
   for _, value in pairs(strings) do
     res = res .. value .. delim

@@ -1,15 +1,15 @@
 local utils = require("automakerun.utils")
 
-local float_window = {}
+local floatWindow = {}
 
-float_window.__index = float_window
+floatWindow.__index = floatWindow
 
-function float_window.new(filename)
+function floatWindow.new(filename)
   local self = setmetatable({
     buffer = nil,
     window = nil,
     filename = filename,
-  }, float_window)
+  }, floatWindow)
 
   return self
 end
@@ -34,7 +34,7 @@ local function get_window_config(title)
   return config
 end
 
-function float_window:open()
+function floatWindow:open()
   local window_buffer = vim.api.nvim_create_buf(false, true)
   local window_id = vim.api.nvim_open_win(window_buffer, true, get_window_config(self.filename))
 
@@ -44,7 +44,7 @@ function float_window:open()
   return window_buffer, window_id
 end
 
-function float_window:close()
+function floatWindow:close()
   local window = self.window
   local buffer = self.buffer
   if window ~= nil and vim.api.nvim_win_is_valid(window) then
@@ -59,7 +59,7 @@ function float_window:close()
   end
 end
 
-function float_window:toggle()
+function floatWindow:toggle()
   if self.window == nil and self.buffer == nil then
     self:open()
     local buffer = vim.fn.bufadd(self.filename)
@@ -67,7 +67,7 @@ function float_window:toggle()
     vim.api.nvim_buf_set_lines(self.buffer, 0, -1, true, {})
     local channel = vim.api.nvim_open_term(self.buffer, {})
     local buffer_data = vim.api.nvim_buf_get_lines(buffer, 0, -1, false)
-    local data = string.gsub(utils.concate_strings(buffer_data, "\n"), "\r ", "\n\r")
+    local data = string.gsub(utils.concateStrings(buffer_data, "\n"), "\r ", "\n\r")
     data = string.gsub(data, "^ *", "\r")
     data = string.gsub(data, "\r *", "\r")
     vim.api.nvim_chan_send(channel, data)
@@ -76,13 +76,13 @@ function float_window:toggle()
   self:close()
 end
 
-function float_window:run_cmd(command, args, save_buffer)
+function floatWindow:runCmd(command, args, saveBuffer)
   local buffer = vim.fn.bufadd(self.filename)
   vim.fn.bufload(buffer)
   self:close()
   self:open()
   vim.api.nvim_buf_call(self.buffer, function()
-    local cmd = command .. " " .. utils.concate_strings(args, " ")
+    local cmd = command .. " " .. utils.concateStrings(args, " ")
     cmd = "echo " .. "\"" .. cmd .. "\"" .. " & " .. cmd .. "\n"
     -- vim.api.nvim_buf_set_lines(buffer, -1, -1, false, {cmd})
     vim.fn.termopen(cmd, {
@@ -96,7 +96,7 @@ function float_window:run_cmd(command, args, save_buffer)
       end,
       stdin = "pipe",
       on_exit = function()
-        if save_buffer then
+        if saveBuffer then
           vim.api.nvim_buf_call(buffer, function()
             vim.api.nvim_cmd({
               cmd = "write",
@@ -112,4 +112,4 @@ function float_window:run_cmd(command, args, save_buffer)
   end)
 end
 
-return float_window
+return floatWindow

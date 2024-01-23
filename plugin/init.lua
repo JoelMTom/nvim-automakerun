@@ -1,3 +1,11 @@
+vim.keymap.set("n", "<leader>aa", function ()
+  require("automakerun"):enable()
+end, {
+  silent = true,
+  noremap = true,
+  desc = "Enable Amr"
+})
+
 vim.keymap.set("n", "<leader>ab", function ()
   require("automakerun"):build()
 end, {
@@ -30,10 +38,10 @@ end, {
   desc = "Toggle build window"
 })
 
-vim.keymap.set("n", "<leader>as", function ()
-  require("automakerun"):config_read()
+--[[ vim.keymap.set("n", "<leader>as", function ()
+  require("automakerun"):configRead()
 end, {
   silent = true,
   noremap = true,
   desc = "Setup config"
-})
+}) ]]

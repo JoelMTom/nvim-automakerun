@@ -1,27 +1,27 @@
 local utils = require("automakerun.utils")
 
-local config = {}
+local AmrConfig = {}
 
-config.__index = config
+AmrConfig.__index = AmrConfig
 
-function config.new(filename, default_tasks)
+function AmrConfig.new(filename, default_tasks)
   local self = setmetatable({
     filename = filename,
     default_tasks = default_tasks,
     buffer = nil,
     tasks = nil,
-  }, config)
+  }, AmrConfig)
   return self
 end
 
-function config:openfile()
+function AmrConfig:openfile()
   local buffer = vim.fn.bufadd(self.filename)
   vim.fn.bufload(buffer)
   self.buffer = buffer
   return buffer
 end
 
-function config:write_file()
+function AmrConfig:write_file()
   local lines = vim.json.encode(self.tasks)
   vim.api.nvim_buf_set_lines(self.buffer, 0, -1, false, {lines})
   vim.api.nvim_buf_call(self.buffer, function ()
@@ -32,11 +32,10 @@ function config:write_file()
   end)
 end
 
-function config:readfile()
-  if self.tasks ~= nil then
-    return self.tasks
+function AmrConfig:readfile()
+  if self.buffer == nil then
+    self:openfile()
   end
-
   local lines = vim.api.nvim_buf_get_lines(self.buffer, 0, -1, false)
 
   if #lines == 1 and lines[1] == ""  then
@@ -44,10 +43,8 @@ function config:readfile()
     self:write_file()
     return self.tasks
   end
-
-  local data = utils.concate_strings(lines, "")
+  local data = utils.concateStrings(lines, "")
   self.tasks = vim.json.decode(data)
-
 end
 
-return config.new()
+return AmrConfig.new()

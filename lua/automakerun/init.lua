@@ -1,5 +1,5 @@
-local float_window = require("automakerun.ui.float-window")
-local config = require("automakerun.config.config")
+local floatWindow = require("automakerun.ui.floatWindow")
+local AmrConfig = require("automakerun.config.AmrConfig")
 
 local Amr ={}
 
@@ -7,52 +7,72 @@ Amr.__index = Amr
 
 function Amr.new()
   local self = setmetatable({
-    tasks_filename = nil,
-    build_filename = nil,
-    amr_dir = nil,
-    build_window = nil,
-    run_window = float_window.new("run"),
-    default_tasks = nil,
-    configuration = nil
+    enabled = false,
+    tasksFilename = nil,
+    buildFilename = nil,
+    amrDir = nil,
+    buildWindow = nil,
+    runWindow = floatWindow.new("run"),
+    defaultTasks = nil,
+    AmrConfig = nil
   }, Amr)
 
   return self
 end
 
 function Amr:setup(opts)
-  self.default_tasks = opts.default_tasks
-  self.amr_dir = vim.fs.normalize(opts.amr_dir, {})
-  self.tasks_filename = self.amr_dir .. "/" .. vim.fs.normalize(opts.tasks_filename, {})
-  self.build_filename =  self.amr_dir .. "/" .. vim.fs.normalize(opts.build_filename, {})
-  self.build_window = float_window.new(self.build_filename)
-  self.configuration = config.new(self.tasks_filename, self.default_tasks)
+  print("a")
+  self.defaultTasks = opts.defaultTasks
+  self.amrDir = vim.fs.normalize(opts.amrDir, {})
+  self.tasksFilename = self.amrDir .. "/" .. vim.fs.normalize(opts.tasksFilename, {})
+  self.buildFilename =  self.amrDir .. "/" .. vim.fs.normalize(opts.buildFilename, {})
+  self.buildWindow = floatWindow.new(self.buildFilename)
+  self.AmrConfig = AmrConfig.new(self.tasksFilename, self.defaultTasks)
+end
 
-  if vim.fn.isdirectory(self.amr_dir) ~= 1 then
-    vim.fn.mkdir(self.amr_dir, "p")
+function Amr:enable()
+  if vim.fn.isdirectory(self.amrDir) ~= 1 then
+    vim.fn.mkdir(self.amrDir, "p")
   end
-
+  self.AmrConfig:readfile()
+  self.enabled = true
 end
 
 function Amr:build()
-  self.build_window:run_cmd("clang++", { "main.cpp", "-o main" }, true)
+  if not self.enabled then
+    return
+  end
+  self.buildWindow:runCmd("clang++", { "main.cpp", "-o main" }, true)
 end
 
 function Amr:run()
-  self.run_window:run_cmd("./main", {}, false)
+  if not self.enabled then
+    return
+  end
+  self.runWindow:runCmd("./main", {}, false)
 end
 
 function Amr:exit()
-  self.run_window:close()
+  if not self.enabled then
+    return
+  end
+  self.runWindow:close()
 end
 
 function Amr:toggle()
-  self.run_window:close()
-  self.build_window:toggle()
+  if not self.enabled then
+    return
+  end
+  self.runWindow:close()
+  self.buildWindow:toggle()
 end
 
-function Amr:config_read()
-  self.configuration:openfile()
-  self.configuration:readfile()
-end
+--[[ function Amr:configRead()
+  if not self.enabled then
+    return
+  end
+  self.AmrConfig:openfile()
+  self.AmrConfig:readfile()
+end ]]
 
 return Amr.new()
