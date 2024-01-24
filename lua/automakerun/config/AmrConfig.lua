@@ -1,9 +1,18 @@
 local utils = require("automakerun.utils")
 
+--@class AmrConfig
+--@field filename string | nil
+--@field default_tasks table | nil
+--@field tasks table | nil
+--@field buffer number | nil
+
 local AmrConfig = {}
 
 AmrConfig.__index = AmrConfig
 
+--@param filename string
+--@param default_tasks table
+--@return AmrConfig
 function AmrConfig.new(filename, default_tasks)
   local self = setmetatable({
     filename = filename,
@@ -14,6 +23,7 @@ function AmrConfig.new(filename, default_tasks)
   return self
 end
 
+--@return buffer
 function AmrConfig:openfile()
   local buffer = vim.fn.bufadd(self.filename)
   vim.fn.bufload(buffer)
@@ -32,6 +42,7 @@ function AmrConfig:write_file()
   end)
 end
 
+--@return tasks
 function AmrConfig:readfile()
   if self.buffer == nil then
     self:openfile()
@@ -45,6 +56,12 @@ function AmrConfig:readfile()
   end
   local data = utils.concateStrings(lines, "")
   self.tasks = vim.json.decode(data)
+  return self.tasks
+end
+
+function AmrConfig:enable()
+  self.tasks = nil
+  self:readfile()
 end
 
 return AmrConfig.new()

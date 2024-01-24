@@ -1,9 +1,15 @@
 local utils = require("automakerun.utils")
 
+--@class floatWindow
+--@field buffer number | nil
+--@field window number | nil
+--@field filename string | nil
+
 local floatWindow = {}
 
 floatWindow.__index = floatWindow
 
+--@return floatWindow
 function floatWindow.new(filename)
   local self = setmetatable({
     buffer = nil,
@@ -14,6 +20,8 @@ function floatWindow.new(filename)
   return self
 end
 
+--@param title string
+--@return table
 local function get_window_config(title)
   local row = 0
   local col = vim.api.nvim_win_get_height(0)
@@ -34,6 +42,8 @@ local function get_window_config(title)
   return config
 end
 
+--@return window_buffer number
+--@return window_id number
 function floatWindow:open()
   local window_buffer = vim.api.nvim_create_buf(false, true)
   local window_id = vim.api.nvim_open_win(window_buffer, true, get_window_config(self.filename))
